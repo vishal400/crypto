@@ -379,6 +379,11 @@ width: 70%;
 
 .select-currency{
     width: 300px;
-    margin: 20px;
     right: 0px;
+}
+
+.select-currency-container{
+padding: 10px;
+margin: 10px;
+width: fit-content;
 }

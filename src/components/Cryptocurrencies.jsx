@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 
 import { useGetCryptosQuery } from "../services/cryptoApi";
 import { Card, Col, Row, Input, Typography } from "antd";
+import Loader from "./Loader";
 
 const { Text } = Typography;
 
@@ -33,7 +34,7 @@ const Cryptocurrencies = (props) => {
     setSearchTerm(e.target.value);
   };
 
-  if (isFetching) return "Loading...";
+  if (isFetching) return <Loader />;
 
   return (
     <>

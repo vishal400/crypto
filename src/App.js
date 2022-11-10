@@ -15,15 +15,16 @@ import {
 import { useGetReferenceCurrencyQuery } from "./services/cryptoApi";
 import { currencyActions } from "./app/store";
 import { useDispatch, useSelector } from "react-redux";
+import Title from "antd/lib/typography/Title";
 
 const { Option } = Select;
 
 const App = () => {
   const [currencies, setCurrencies] = useState(null);
-  console.log(process.env.REACT_APP_RAPID_API_KEY)
-//   const [currency, setCurrency] = useState("yhjMzLPhuIDl");
-//   const  currency = useSelector((state))
-const dispatch = useDispatch();
+  console.log(process.env.REACT_APP_RAPID_API_KEY);
+  //   const [currency, setCurrency] = useState("yhjMzLPhuIDl");
+  //   const  currency = useSelector((state))
+  const dispatch = useDispatch();
 
   const fetchReferenceCurrencies = async () => {
     try {
@@ -32,8 +33,7 @@ const dispatch = useDispatch();
         {
           headers: {
             "x-rapidapi-host": "coinranking1.p.rapidapi.com",
-            "x-rapidapi-key":
-            process.env.REACT_APP_RAPID_API_KEY,
+            "x-rapidapi-key": process.env.REACT_APP_RAPID_API_KEY,
           },
           params: { limit: 100 },
         }
@@ -56,8 +56,8 @@ const dispatch = useDispatch();
 
   const currencyChangeHandler = (key, value) => {
     console.log(value);
-    const data = {key, sign: value.children[4], name: value.children[2]}
-    dispatch(currencyActions.updateCurrency(data))
+    const data = { key, sign: value.children[4], name: value.children[2] };
+    dispatch(currencyActions.updateCurrency(data));
     // setCurrency(key)
   };
 
@@ -65,10 +65,10 @@ const dispatch = useDispatch();
     fetchReferenceCurrencies();
   }, []);
 
-//   useEffect(() => {
-//     console.log("currency changed")
-//     console.log(currency)
-//   }, [currency])
+  //   useEffect(() => {
+  //     console.log("currency changed")
+  //     console.log(currency)
+  //   }, [currency])
 
   return (
     <div className="app">
@@ -77,22 +77,29 @@ const dispatch = useDispatch();
       </div>
       <div className="main">
         <Layout>
-          <Select
-            defaultValue="US Dollar"
-            className="select-currency"
-            placeholder="Select Currency"
-            onChange={(key, value) => currencyChangeHandler(key, value)}
-          >
-            {currencies &&
-              currencies.map((currency) => {
-                return (
-                  <Option key={currency.uuid}>
-                    <img alt="currency icon" src={currency.iconUrl} style={{ width: "20px" }} />{" "}
-                    {currency.name} {currency?.sign}
-                  </Option>
-                );
-              })}
-          </Select>
+          <div className="select-currency-container">
+            <Title level={3}>Choose reference currency</Title>
+            <Select
+              defaultValue="US Dollar"
+              className="select-currency"
+              placeholder="Select Reference Currency"
+              onChange={(key, value) => currencyChangeHandler(key, value)}
+            >
+              {currencies &&
+                currencies.map((currency) => {
+                  return (
+                    <Option key={currency.uuid}>
+                      <img
+                        src={currency.iconUrl}
+                        style={{ width: "20px" }}
+                      />{" "}
+                      {currency.name} {currency?.sign}
+                    </Option>
+                  );
+                })}
+            </Select>
+          </div>
+
           <div className="routes">
             <Routes>
               <Route path="/" element=<Homepage /> />

@@ -19,6 +19,7 @@ import {
 import millify from "millify";
 import LineChart from "./LineChart";
 import { useSelector } from "react-redux";
+import Loader from "./Loader";
 
 const { Title, Text } = Typography;
 const { Option } = Select;
@@ -43,7 +44,7 @@ const CryptoDetails = () => {
     referenceCurrencyUuid,
   });
 
-  if (isFetching) return "Loading...";
+  if (isFetching) return <Loader  />;
 
   const cryptoDetails = data?.data?.coin;
 
