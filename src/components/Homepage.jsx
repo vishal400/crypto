@@ -5,13 +5,18 @@ import { Link } from "react-router-dom";
 
 import { useGetCryptosQuery } from "../services/cryptoApi";
 import Cryptocurrencies from "./Cryptocurrencies";
+import { useSelector } from "react-redux";
 
 const { Title } = Typography;
 
 const Homepage = () => {
-  const { data, isFetching } = useGetCryptosQuery(10);
-  console.log(data);
+    const referenceCurrencyUuid = useSelector((state) => state.currency.currencyUuid)
+    const currencySign =  useSelector((state) => state.currency.sign)
+    const count = 10;
+  const { data, isFetching } = useGetCryptosQuery({count, referenceCurrencyUuid});
   const globalStats = data?.data?.stats;
+
+  console.log("home rendered")
 
   if (isFetching) return "Loading...";
 
@@ -20,7 +25,7 @@ const Homepage = () => {
       <Title level={2} className="heading">
         Global Crypto Stats
       </Title>
-      <Row>
+      <Row gutter={[32, 32]}>
         <Col span={12}>
           {" "}
           <Statistic
@@ -31,7 +36,7 @@ const Homepage = () => {
         <Col span={12}>
           {" "}
           <Statistic
-            title="Total Exchange"
+            title="Total Exchanges"
             value={globalStats.totalExchanges}
           />{" "}
         </Col>

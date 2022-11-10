@@ -1,13 +1,24 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import millify from "millify";
+import { useSelector } from "react-redux";
 
 import { useGetCryptosQuery } from "../services/cryptoApi";
-import { Card, Col, Row } from "antd";
+import { Card, Col, Row, Input, Typography } from "antd";
+
+const { Text } = Typography;
 
 const Cryptocurrencies = (props) => {
+  const referenceCurrencyUuid = useSelector(
+    (state) => state.currency.currencyUuid
+  );
+  const currencySign = useSelector((state) => state.currency.sign);
+
   const count = props.simplified ? 10 : 100;
-  const { data, isFetching } = useGetCryptosQuery(count);
+  const { data, isFetching } = useGetCryptosQuery({
+    count,
+    referenceCurrencyUuid,
+  });
   const [coins, setCoins] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   useEffect(() => {
@@ -28,7 +39,10 @@ const Cryptocurrencies = (props) => {
     <>
       {!props.simplified && (
         <div className="search-crypto">
-          <input placeholder="Search currency" onChange={searchHandler} />
+          <Input
+            placeholder="Search Cryptocurrency"
+            onChange={(e) => setSearchTerm(e.target.value.toLowerCase())}
+          />
         </div>
       )}
 
@@ -46,13 +60,26 @@ const Cryptocurrencies = (props) => {
                 <Card
                   title={`${currency.rank}. ${currency.name}`}
                   extra={
-                    <img className="crypto-image" src={currency.iconUrl} />
+                    <img alt="crypto image" className="crypto-image" src={currency.iconUrl} />
                   }
                   hoverable
                 >
-                  <p>Price: {millify(currency.price)} $</p>
+                  <p>
+                    Price: {millify(currency.price)} {currencySign}
+                  </p>
                   <p>Market Cap: {millify(currency.marketCap)}</p>
-                  <p>Change: {millify(currency.change)}</p>
+                  <p>
+                    Change:{" "}
+                    {currency.change < 0 ? (
+                      <Text style={{ color: "red" }}>
+                        {millify(currency.change)}
+                      </Text>
+                    ) : (
+                      <Text style={{ color: "green" }}>
+                        {millify(currency.change)}
+                      </Text>
+                    )}
+                  </p>
                 </Card>
               </Link>
             </Col>

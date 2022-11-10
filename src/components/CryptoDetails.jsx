@@ -18,51 +18,64 @@ import {
 } from "@ant-design/icons";
 import millify from "millify";
 import LineChart from "./LineChart";
+import { useSelector } from "react-redux";
 
 const { Title, Text } = Typography;
 const { Option } = Select;
 
 const CryptoDetails = () => {
+  const referenceCurrencyUuid = useSelector(
+    (state) => state.currency.currencyUuid
+  );
+  const currencySign = useSelector((state) => state.currency.sign);
+  const currencyName = useSelector((state) => state.currency.name);
+  const sign = currencySign ? currencySign : "";
+
   const [timeperiod, setTimeperiod] = useState("7d");
   const { coinId } = useParams();
-  const { data, isFetching } = useGetCryptoDetailsQuery(coinId);
+  const { data, isFetching } = useGetCryptoDetailsQuery({
+    coinId,
+    referenceCurrencyUuid,
+  });
   const { data: cryptoHistory } = useGetCryptoHistoryQuery({
     coinId,
     timeperiod,
+    referenceCurrencyUuid,
   });
-
 
   if (isFetching) return "Loading...";
 
   const cryptoDetails = data?.data?.coin;
-  
+
   const time = ["3h", "24h", "7d", "30d", "1y", "3m", "3y", "5y"];
 
   //stats of single crypto currency
   const stats = [
     {
-      title: "Price to USD",
-      value: `$ ${cryptoDetails?.price && millify(cryptoDetails?.price)}`,
+      title: `Price to ${currencyName}`,
+      value: `${sign} ${
+        cryptoDetails?.price && millify(cryptoDetails?.price)
+      }`,
       icon: <DollarCircleOutlined />,
     },
     { title: "Rank", value: cryptoDetails?.rank, icon: <NumberOutlined /> },
     {
       title: "24h Volume",
-      value: `$ ${
+      value: `${sign} ${
         cryptoDetails?.["24hVolume"] && millify(cryptoDetails?.["24hVolume"])
       }`,
       icon: <ThunderboltOutlined />,
     },
     {
       title: "Market Cap",
-      value: `$ ${
+      value: `${sign} ${
         cryptoDetails?.marketCap && millify(cryptoDetails?.marketCap)
       }`,
       icon: <DollarCircleOutlined />,
     },
     {
       title: "All-time-high(daily avg.)",
-      value: `$ ${
+      value: `${sign} ${
         cryptoDetails?.allTimeHigh?.price &&
         millify(cryptoDetails?.allTimeHigh?.price)
       }`,
@@ -93,14 +106,14 @@ const CryptoDetails = () => {
     },
     {
       title: "Total Supply",
-      value: `$ ${
+      value: `${sign} ${
         cryptoDetails?.supply?.total && millify(cryptoDetails?.supply?.total)
       }`,
       icon: <ExclamationCircleOutlined />,
     },
     {
       title: "Circulating Supply",
-      value: `$ ${
+      value: `${sign} ${
         cryptoDetails?.supply?.circulating &&
         millify(cryptoDetails?.supply?.circulating)
       }`,
@@ -111,7 +124,7 @@ const CryptoDetails = () => {
   return (
     <Col className="coin-detail-container">
       <Col className="coin-heading-container">
-        <img src={cryptoDetails.iconUrl} style={{ width: "48px" }} />
+        <img alt="crypto icon" src={cryptoDetails.iconUrl} style={{ width: "48px" }} />
         <Title level={2} className="coin-name">
           {data?.data?.coin.name}
         </Title>
@@ -128,7 +141,11 @@ const CryptoDetails = () => {
         })}
       </Select>
       {/* Line chart will be here */}
-      <LineChart coinHistory={cryptoHistory} currentPrice={millify(cryptoDetails?.price)} coinName={cryptoDetails?.name} />
+      <LineChart
+        coinHistory={cryptoHistory}
+        currentPrice={millify(cryptoDetails?.price)}
+        coinName={cryptoDetails?.name}
+      />
       <Col className="stats-container">
         <Col className="coin-statistics">
           <Col className="coin-statistics-heading">

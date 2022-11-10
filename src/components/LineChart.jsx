@@ -10,6 +10,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import { useSelector } from "react-redux";
 
 ChartJS.register(
   CategoryScale,
@@ -23,6 +24,7 @@ ChartJS.register(
 const { Title, Text } = Typography;
 
 const LineChart = (props) => {
+    const currencySign = useSelector((state) => state.currency.sign)
   const coinHistory = props.coinHistory;
   const currentPrice = props.currentPrice;
   const coinName = props.coinName;
@@ -85,7 +87,7 @@ const LineChart = (props) => {
             )}
           </Title>
           <Title level={5} className="current-price">
-            Current {coinName} Price: $ {currentPrice}
+            Current {coinName} Price: {currencySign} {currentPrice}
           </Title>
         </Col>
       </Row>

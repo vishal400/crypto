@@ -376,3 +376,9 @@ width: 70%;
     padding: 20px;
     align-items: center;
 }
+
+.select-currency{
+    width: 300px;
+    margin: 20px;
+    right: 0px;
+}
