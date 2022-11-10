@@ -31,15 +31,6 @@ export const cryptoApi = createApi({
       query: ({ coinId, timeperiod, referenceCurrencyUuid }) =>
         createRequest(`coin/${coinId}/history?referenceCurrencyUuid=${referenceCurrencyUuid}&timePeriod=${timeperiod}`),
     }),
-    getReferenceCurrency: builder.query({
-      query: () => ({
-        url: `reference-currencies?limit=100`,
-        headers,
-        responseHandler: (response) => {
-          console.log(response);
-        },
-      }),
-    }),
   }),
 });
 
